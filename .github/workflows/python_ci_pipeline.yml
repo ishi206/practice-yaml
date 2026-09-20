@@ -35,7 +35,7 @@ jobs:
       APP_ENV: production
     steps:
       - name: Check repository
-        run: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: Build application
         run : echo "Building the application..."
       - name: Show environment
