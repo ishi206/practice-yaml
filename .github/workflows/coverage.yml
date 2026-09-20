@@ -1,0 +1,40 @@
+name: Python Coverage Check
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+  workflow_dispatch:
+
+jobs:
+  
+  coverage:
+    runs-on: ubuntu-latest
+    env:
+      TEST_ENV: ci
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Install pytest
+        run: pip install pytest pytest-cov
+      - name: Install coverage package
+        run: PYTHONPATH=. pytest --cov=. --cov-report=html
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
+      - name: Show environment
+        run: echo "Running tests in ci environment"
+      - name: Main Branch Coverage
+        if: github.ref == 'refs/heads/main'
+        run: echo "Coverage check running on main branch"
