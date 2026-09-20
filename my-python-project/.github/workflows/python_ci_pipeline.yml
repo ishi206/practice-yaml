@@ -1,0 +1,44 @@
+name: Python CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: python -m pytest
+      
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: production
+    steps:
+      - name: Check repository
+        run: actions/checkout@v4
+      - name: Build application
+        run : echo "Building the application..."
+      - name: Show environment
+        run: echo $APP_ENV
+      - name: Production Build
+        if: github.ref == 'refs/heads/main'
+        run: echo "Production build started"
+    
